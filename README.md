@@ -7,16 +7,15 @@ Nowadays, whale is really rare and protecting whale is necessary. Different spec
 
 
 ### B. Research of related work
-#### b(1)    ALEXNET
+#### B(1)    ALEXNET
 An ImageNet Classification with Deep Convolutional Networks, widely used in neural learning area. In 2012, CNN used to achieve test error rate of 15.4%, nearly half of the best work before. This technology totally used ReLU for the nonlinearity functions and data augmentation technology consisting image translations, horizontal reflections, and patch extractions.
 
-#### b(2)    YOLO
+#### B(2)    YOLO
 YOLO(You look only once) is a real-time object detection system, they apply the model to an image at multiple locations and scales. High scoring regions of the image are considered detections. It provided a pre-trained model for users to figure out the object from a photo in different size.
 
 
 ### C. Data sources
-Most of datas comes from [Happy Whale](https://happywhale.com), a platform which already use image process algorithms to receive photo from public and category photos.
-
+Most of datas comes from [Happy Whale](https://happywhale.com) and sorted by [Kaggle](https://www.kaggle.com), a platform which already use image process algorithms to category photos collected from public and various survey.
 
 
 ### D. Algorithms are being used and code sources
@@ -31,7 +30,11 @@ Some kernels made further research. For instance, some would use constructed [CN
 2018.3.31 - due  improve model and thesis<br />
 
 ### F. References
-* [Python Naming Convention](http://visualgit.readthedocs.io/en/latest/pages/naming_convention.html)
+1. [Python Naming Convention](http://visualgit.readthedocs.io/en/latest/pages/naming_convention.html)
+2. https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf
+3. https://arxiv.org/abs/1512.03385
+4. https://en.wikipedia.org/wiki/Humpback_whale
+5. https://cs231n.github.io
 
 ----
 
