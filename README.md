@@ -22,14 +22,17 @@ Most of datas comes from [Happy Whale](https://happywhale.com) and sorted by [Ka
 Since the competition just started, limited number of kernels are available. For most of public kernels, they just try to input data, resize photos and make color channels identical — even it means it may lose some information of colored photos.<br />
 Some kernels made further research. For instance, some would use constructed [CNN model to finish the initial identification](https://www.kaggle.com/sunnybeta322/what-am-i-whale-let-me-tell-you). Other use self-developed [triplet model](https://www.kaggle.com/CVxTz/beating-the-baseline-keras-lb-0-38) and it performs better than general CNN model. They beat the baseline of the competition and reached 46.821% accuracy, which seems worth to make some further research.<br />
 
+### E. Evaluating the success of the model
+The success of the model will be evaluated based on the accuracy of the model could achieve. The host of the competition will provide one or more test set for participants to evaluate and improve the model. What we need to do is to construct, test and improve the model based on the result we get.
 
-### E. Project timeline
+
+### F. Project timeline
 2018.1.26 - 2018.2.9 Project preparation(Learning deep-learning and machine learning fundamental technology)<br />
 2018.2.9 - 2018.3.11 Confirm the main method and create the main frame of thesis<br />
 2018.3.11 - 2018.3.30 Test the project and improve the model according to the result<br />
 2018.3.31 - due  improve model and thesis<br />
 
-### F. References
+### G. References
 1. [Python Naming Convention](http://visualgit.readthedocs.io/en/latest/pages/naming_convention.html)
 2. https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf
 3. https://arxiv.org/abs/1512.03385
