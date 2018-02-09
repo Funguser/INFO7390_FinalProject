@@ -7,10 +7,13 @@ Nowadays, whale is really rare and protecting whale is necessary. Different spec
 
 
 ### B. Research of related work
-#### B(1)    ALEXNET
+#### B(1) FaceNet
+A Unified Embedding for Face Recognition and Clustering. It uses a deep convolutional network trained to directly optimize the embedding itself, rather than an intermediate bottleneck layer as in previous deep learning approaches, directly learns a mapping from face images to a compact Euclidean space where distances directly correspond to a measure of face similarity. Since the way is really similar with the process for us to analyze the tail of different whales, we would use part of this model in our project.
+
+#### B(2)    ALEXNET
 An ImageNet Classification with Deep Convolutional Networks, widely used in neural learning area. In 2012, CNN used to achieve test error rate of 15.4%, nearly half of the best work before. This technology totally used ReLU for the nonlinearity functions and data augmentation technology consisting image translations, horizontal reflections, and patch extractions.
 
-#### B(2)    YOLO
+#### B(3)    YOLO
 YOLO(You look only once) is a real-time object detection system, they apply the model to an image at multiple locations and scales. High scoring regions of the image are considered detections. It provided a pre-trained model for users to figure out the object from a photo in different size.
 
 
