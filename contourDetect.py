@@ -11,7 +11,7 @@ for path,d,filelist in g:
     for filename in filelist:
         if filename.endswith('jpg'):
 
-            img = cv2.imread(filename)
+            img = cv2.imread(originPath+filename)
 
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
