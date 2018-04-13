@@ -23,15 +23,15 @@ Since some of photos in the datast is gray and White as well as others are color
 We also write a function which could figure out apparent contour in one photo, which could highlighted the shape of the tail in some cases. We would generate a brand new dataset based on this algotithm and use models to learn this dataset.
 
 ### F. Main model of the project
-F(1) [traditional CNN model with relative few layers](https://github.com/ZiyaoQiao/INFO7390_FinalProject/tree/master/Basic%20Model)<br />
-F(2)[pretrained model(including InceptionV3, Resnet50, VGG16)](https://github.com/ZiyaoQiao/INFO7390_FinalProject/blob/master/Pretrained%20Model/InceptionV3.py)
+1. [traditional CNN model with relative few layers](https://github.com/ZiyaoQiao/INFO7390_FinalProject/tree/master/Basic%20Model)<br />
+2. [pretrained model(including InceptionV3, Resnet50, VGG16)](https://github.com/ZiyaoQiao/INFO7390_FinalProject/blob/master/Pretrained%20Model/InceptionV3.py)
 
 ### G. Results
 
 | Method        | Accuracy in test set                         |
 | ------------- | ---------------------------- |
 | ResNet without 'NewWhale'            | 32.482%                  |
-| ResNet with 'NewWhale'            | 32.482%                  |
+| ResNet with 'NewWhale'            | 32.631%                  |
 
 
 ### H. References
