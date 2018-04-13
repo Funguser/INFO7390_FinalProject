@@ -29,6 +29,7 @@ Since the category"NewWhale" is an ambiguous category, contain a lot of photos(m
 1. [traditional CNN model with relative few layers](https://github.com/ZiyaoQiao/INFO7390_FinalProject/tree/master/Basic%20Model)<br />
 2. [pretrained model(including InceptionV3, Resnet50, VGG16)](https://github.com/ZiyaoQiao/INFO7390_FinalProject/blob/master/Pretrained%20Model/InceptionV3.py)<br />
 <br />
+
 *Before use, please make sure you download the Dataset, edit the input path in the code correctly and install all necessary packages.*
 
 ### G. Results
