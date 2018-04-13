@@ -22,6 +22,9 @@ Since some of photos in the datast is gray and White as well as others are color
 #### E(2) Detect the contour of the tail
 We also write a function which could figure out apparent contour in one photo, which could highlighted the shape of the tail in some cases. We would generate a brand new dataset based on this algotithm and use models to learn this dataset.
 
+#### E(3) Train without "NewWhale" Id
+Since the category"NewWhale" is an ambiguous category, contain a lot of photos(more than 800) with various features, which would lead a large amount of noise, so in some of our model, we train the model without this category.
+
 ### F. Main model of the project
 1. [traditional CNN model with relative few layers](https://github.com/ZiyaoQiao/INFO7390_FinalProject/tree/master/Basic%20Model)<br />
 2. [pretrained model(including InceptionV3, Resnet50, VGG16)](https://github.com/ZiyaoQiao/INFO7390_FinalProject/blob/master/Pretrained%20Model/InceptionV3.py)
@@ -32,7 +35,7 @@ We also write a function which could figure out apparent contour in one photo, w
 | ------------- | ---------------------------- | ------------------------------------------------ |
 | ResNet without 'NewWhale'            | 32.482%                  | 60                 |
 | ResNet with 'NewWhale'            | 32.631%                  | 60                   |
-| VGG16 with 'NewWhale'            | 32.999%                  | 10                   |
+| VGG16 with 'NewWhale'            | 32.999%                  | 20                   |
 
 
 ### H. References
