@@ -22,7 +22,7 @@ The success of the model will be evaluated based on the accuracy of the model co
 
 
 ### G. References
-1. [Neural Networks and Deep Learnin](https://www.coursera.org/learn/neural-networks-deep-learning)
+1. [Neural Networks and Deep Learning](https://www.coursera.org/learn/neural-networks-deep-learning)
 2. https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf
 3. https://arxiv.org/abs/1512.03385
 4. https://en.wikipedia.org/wiki/Humpback_whale
@@ -30,5 +30,7 @@ The success of the model will be evaluated based on the accuracy of the model co
 
 ### H.License (MIT)
 These tutorials and source-code are published under the [MIT License](https://github.com/ZiyaoQiao/INFO7390_FinalProject/blob/master/LICENSE) which allows very broad use for both academic and commercial purposes.<br />
+
 A few of the images used for demonstration purposes may be under copyright. These images are included under the "fair usage" laws.<br />
+
 You are very welcome to modify these tutorials and use them in your own projects, but please keep a link to the [original repository](https://github.com/ZiyaoQiao/INFO7390_FinalProject).<br />
