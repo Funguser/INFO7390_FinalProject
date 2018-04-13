@@ -28,10 +28,11 @@ We also write a function which could figure out apparent contour in one photo, w
 
 ### G. Results
 
-| Method        | Accuracy in test set                         |
-| ------------- | ---------------------------- |
-| ResNet without 'NewWhale'            | 32.482%                  |
-| ResNet with 'NewWhale'            | 32.631%                  |
+| Method        | Accuracy in test set                         | Epochs                         |
+| ------------- | ---------------------------- | ------------------------------------------------ |
+| ResNet without 'NewWhale'            | 32.482%                  | 60                 |
+| ResNet with 'NewWhale'            | 32.631%                  | 60                   |
+| VGG16 with 'NewWhale'            | 32.999%                  | 10                   |
 
 
 ### H. References
