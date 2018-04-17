@@ -21,7 +21,7 @@ The success of the model will be evaluated based on the accuracy of the model co
 <br />
 
 ### F. Project Process Description -- Basic CNN Model
-*Before use, please make sure you download the Dataset, edit the input path in the code correctly and install all necessary packages.*
+#### *Before use, please make sure you download the Dataset, edit the input path in the code correctly and install all necessary packages.*
 
 #### F(1) Detect the contour of the tail
 We also write a function which could figure out apparent contour in one photo, which could highlighted the shape of the tail in some cases. We would generate a brand new dataset based on this algotithm and use models to learn this dataset.
@@ -112,11 +112,77 @@ class LabelOneHotEncoder():
 
 ```
 
-#### F(5) 
- 
+#### F(5) Plot Images 
+A function for us in developing, to watch the dataset again before we train.
+
+```python
+def plotImages(images_arr, n_images=4):
+    fig, axes = plt.subplots(n_images, n_images, figsize=(12,12))
+    axes = axes.flatten()
+    for img, ax in zip( images_arr, axes):
+        if img.ndim != 2:
+            img = img.reshape((SIZE,SIZE))
+        ax.imshow( img, cmap="Greys_r")
+        ax.set_xticks(())
+        ax.set_yticks(())
+    plt.tight_layout()
+
+```
+
+#### F(6) Assist functions 
+We also set some assistant function for our model, set up the training set, visualize image if necessary and construct the class weights. In this way, we could set class label of image as index and we could also devide photos in each step equally.
+
+```python
+#constructing class weights
+WeightFunction = lambda x : 1./x**0.75
+ClassLabel2Index = lambda x : lohe.le.inverse_tranform( [[x]])
+CountDict = dict(train_df["Id"].value_counts())
+class_weight_dic = {lohe.le.transform([image_name])[0]: WeightFunction(count) for image_name, count in CountDict.items()}
+
+#training the image preprocessing
+image_gen.fit(x_train, augment=True)
+
+#visualization of some images out of the preprocessing
+augmented_images, _ = next( image_gen.flow( x_train, y_train.toarray(), batch_size=4*4))
+
+```
+
+####F(7) Convolution Nerual Network Model
+After many different try, we finally worked out a CNN model with highest cost-interest ratio. This model have 2 convolutional layer after 1 input layer, with several dropout layer, flatten layer and dense layer to reshape the data and catch features. We set batchsize as 128 and step value is total number of the training set devided by batchsize, in this way we could make sure every photo in the dataset could be iterated once in a single epoch. 
+
+```python
+batch_size = 128
+num_classes = len(y_cat.toarray()[0])
+epochs = 9
+
+model = Sequential()
+model.add(Conv2D(48, kernel_size=(3, 3),
+                 activation='relu',
+                 input_shape=input_shape))
+model.add(Conv2D(48, (3, 3), activation='sigmoid'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Conv2D(48, (5, 5), activation='sigmoid'))
+model.add(MaxPooling2D(pool_size=(3, 3)))
+model.add(Dropout(0.33))
+model.add(Flatten())
+model.add(Dense(36, activation='sigmoid'))
+model.add(Dropout(0.33))
+model.add(Dense(36, activation='sigmoid'))
+model.add(Dense(num_classes, activation='softmax'))
+
+model.compile(loss=keras.losses.categorical_crossentropy,
+              optimizer=keras.optimizers.Adadelta(),
+              metrics=['accuracy'])
+model.summary()
+model.fit_generator(image_gen.flow(x_train, y_train.toarray(), batch_size=batch_size),
+          steps_per_epoch=  x_train.shape[0]//batch_size,
+          epochs=epochs,
+          verbose=1,
+          class_weight=class_weight_dic)
+```
 
 ### G. Project Process Description -- Pretrained Model
-*Before use, please make sure you download the Dataset, edit the input path in the code correctly and install all necessary packages.*
+#### *Before use, please make sure you download the Dataset, edit the input path in the code correctly and install all necessary packages.*
 #### G(1) Train without "New_whale" class
 Since the category "New_Whale" is an ambiguous category, contain a lot of photos(more than 800) with various features, which would lead a large amount of noise, so in some of our model, we train the model without this category.
 
