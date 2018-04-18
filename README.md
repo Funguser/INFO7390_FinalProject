@@ -147,8 +147,8 @@ augmented_images, _ = next( image_gen.flow( x_train, y_train.toarray(), batch_si
 
 ```
 
-####F(7) Convolution Nerual Network Model
-After many different try, we finally worked out a CNN model with highest cost-interest ratio. This model have 2 convolutional layer after 1 input layer, with several dropout layer, flatten layer and dense layer to reshape the data and catch features. We set batchsize as 128 and step value is total number of the training set devided by batchsize, in this way we could make sure every photo in the dataset could be iterated once in a single epoch. 
+#### F(7) Convolution Nerual Network Model
+After many different try, we finally worked out a CNN model with highest cost-interest ratio. This model have 2 convolutional layer after 1 input layer, with several dropout layer, flatten layer and dense layer to reshape the data and catch features. We set batchsize as 128 and step value is total number of the training set devided by batchsize, in this way we could make sure every photo in the dataset could be iterated once in a single epoch. Initially, the model run in 9 epochs to run in relative low costs. However, more epochs could be added if someone have better machine.
 
 ```python
 batch_size = 128
@@ -182,19 +182,25 @@ model.fit_generator(image_gen.flow(x_train, y_train.toarray(), batch_size=batch_
 ```
 
 ### G. Project Process Description -- Pretrained Model
+
 #### *Before use, please make sure you download the Dataset, edit the input path in the code correctly and install all necessary packages.*
+
+
 #### G(1) Train without "New_whale" class
 Since the category "New_Whale" is an ambiguous category, contain a lot of photos(more than 800) with various features, which would lead a large amount of noise, so in some of our model, we train the model without this category.
 
+```python
+
+```
 
 
 ### H. Results
 
 | Method        | Accuracy in test set                         | Epochs                         | Average time (s/per epoch)    |
 | ------------- | ---------------------------- | ----                  |------------------------------------------------ |
-| ResNet without 'NewWhale'            | 32.482%                  | 60                 | 5504s|
-| ResNet with 'NewWhale'            | 32.631%                  | 60                   | 5476s|
-| VGG19 with 'NewWhale'            | 32.999%                  | 20                   | 3354s|
+| ResNet50 without 'NewWhale'            | 32.482%                  | 60                 | 12478s|
+| ResNet50 with 'NewWhale'            | 32.631%                  | 60                   | 12600s|
+| VGG19 with 'NewWhale'            | 32.999%                  | 20                   | 2270s|
 | inceptionV3 without 'NewWhale'            | 32.481%                  | 10                   | 4703s|
 | CNN Model with contour detected            | 32.763%                  | 69                   | 55s|
 | CNN Model without contour detected            | 32.875%                  | 10                   | 54s|
