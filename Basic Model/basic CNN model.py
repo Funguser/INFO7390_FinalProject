@@ -124,7 +124,7 @@ augmented_images, _ = next( image_gen.flow( x_train, y_train.toarray(), batch_si
 
 batch_size = 128
 num_classes = len(y_cat.toarray()[0])
-epochs = 9
+epochs = 70
 
 print('x_train shape:', x_train.shape)
 print(x_train.shape[0], 'train samples')

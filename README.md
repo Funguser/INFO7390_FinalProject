@@ -153,7 +153,7 @@ After many different try, we finally worked out a CNN model with highest cost-in
 ```python
 batch_size = 128
 num_classes = len(y_cat.toarray()[0])
-epochs = 9
+epochs = 70
 
 model = Sequential()
 model.add(Conv2D(48, kernel_size=(3, 3),
@@ -223,7 +223,7 @@ Since the category "New_Whale" is an ambiguous category, contain a lot of photos
 #### G(3) Set up attributes
 ```python
 IM_WIDTH, IM_HEIGHT = 224, 224  # fixed size for InceptionV3
-NB_EPOCHS = 3
+NB_EPOCHS = 60
 BAT_SIZE = 32
 FC_SIZE = 1024
 NB_IV3_LAYERS_TO_FREEZE = 172
@@ -523,10 +523,10 @@ with open("sample_submission.csv", "w") as f:
 | ------------- | ---------------------------- | ----                  |------------------------------------------------ |
 | ResNet50 without 'NewWhale'            | 32.482%                  | 60                 | 12478s|
 | ResNet50 with 'NewWhale'            | 32.631%                  | 60                   | 12600s|
-| VGG19 with 'NewWhale'            | 32.999%                  | 20                   | 2270s|
-| inceptionV3 without 'NewWhale'            | 32.481%                  | 10                   | 4703s|
-| CNN Model with contour detected            | 32.763%                  | 69                   | 55s|
-| CNN Model without contour detected            | 32.875%                  | 10                   | 54s|
+| VGG19 with 'NewWhale'            | 32.999%                  | 60                   | 2270s|
+| inceptionV3 without 'NewWhale'            | 32.481%                  | 60                   | 4703s|
+| CNN Model with contour detected            | 32.763%                  | 70                   | 55s|
+| CNN Model without contour detected            | 32.875%                  | 70                   | 54s|
 
 
 

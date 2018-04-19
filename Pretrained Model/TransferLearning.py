@@ -39,7 +39,7 @@ from keras.optimizers import SGD
 from keras.applications import VGG19
 
 IM_WIDTH, IM_HEIGHT = 224, 224  # fixed size for InceptionV3
-NB_EPOCHS = 3
+NB_EPOCHS = 60
 BAT_SIZE = 32
 FC_SIZE = 1024
 NB_IV3_LAYERS_TO_FREEZE = 172
