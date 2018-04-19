@@ -134,7 +134,7 @@ We also set some assistant function for our model, set up the training set, visu
 
 ```python
 #constructing class weights
-WeightFunction = lambda x : 1./x**0.75
+WeightFunction = lambda x : 1/x**0.75
 ClassLabel2Index = lambda x : lohe.le.inverse_tranform( [[x]])
 CountDict = dict(train_df["Id"].value_counts())
 class_weight_dic = {lohe.le.transform([image_name])[0]: WeightFunction(count) for image_name, count in CountDict.items()}
@@ -185,16 +185,339 @@ model.fit_generator(image_gen.flow(x_train, y_train.toarray(), batch_size=batch_
 
 #### *Before use, please make sure you download the Dataset, edit the input path in the code correctly and install all necessary packages.*
 
+#### *Please setup a Machine with advanced GPU to used those pretrained models, if you run those model without such a machine, it would take a really long time to run, be interrupted easily and damage the machine seriously.*
 
-#### G(1) Train without "New_whale" class
-Since the category "New_Whale" is an ambiguous category, contain a lot of photos(more than 800) with various features, which would lead a large amount of noise, so in some of our model, we train the model without this category.
+#### G(1) Split photo with different ID to different files
+``` python
+import pandas as pd
+from glob import glob
+import os
+from shutil import copyfile,rmtree
+
+train_images = glob("Datas/train/*jpg")
+test_images = glob("Datas/test/*jpg")
+df = pd.read_csv("Datas/train.csv")
+
+ImageToLabelDict = dict( zip( df["Image"], df["Id"]))
+df["Image"].head()
+
+new_data_folder ='keras/train/'
+if(os.path.exists(new_data_folder)):
+    rmtree(new_data_folder)
+
+def save_images(df,ImageToLabelDict):
+    for key in df["Image"]:
+        image_class = ImageToLabelDict[key]
+        img_full_path = new_data_folder + image_class + '/' + key
+        img_class_path = new_data_folder + image_class
+        if not os.path.exists(img_class_path):
+            os.makedirs(img_class_path)
+        copyfile("Datas/train/"+key, img_full_path)
+
+save_images(df, ImageToLabelDict)
+```
+
+#### G(2) Train without "New_whale" class
+Since the category "New_Whale" is an ambiguous category, contain a lot of photos(more than 800) with various features, which would lead a large amount of noise, so in some of our model, we train the model without this category. All we need to do is just findout the output filepath in the last part and delete the "new-whale" folder.
+
+#### G(3) Set up attributes
+```python
+IM_WIDTH, IM_HEIGHT = 224, 224  # fixed size for InceptionV3
+NB_EPOCHS = 3
+BAT_SIZE = 32
+FC_SIZE = 1024
+NB_IV3_LAYERS_TO_FREEZE = 172
+```
+
+#### G(4) Get number of files
 
 ```python
+def get_nb_files(directory):
+    """Get number of files by searching directory recursively"""
+    if not os.path.exists(directory):
+        return 0
+    cnt = 0
+    for r, dirs, files in os.walk(directory):
+        for dr in dirs:
+            cnt += len(glob(os.path.join(r, dr + "/*")))
+    return cnt
+```
+
+#### G(5) Set up transfer learning process
+
+```python
+setup_to_transfer_learn(model, base_model):
+    """Freeze all layers and compile the model"""
+    for layer in base_model.layers:
+        layer.trainable = False
+    model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
 
 ```
 
 
-### H. Results
+#### G(6) Triplet loss function
+
+```python
+def triplet_loss(y_true, y_pred):
+    y_pred = K.l2_normalize(y_pred, axis=1)
+    batch = BAT_SIZE
+    # print(batch)
+    ref1 = y_pred[0:batch, :]
+    pos1 = y_pred[batch:batch + batch, :]
+    neg1 = y_pred[batch + batch:3 * batch, :]
+    dis_pos = K.sum(K.square(ref1 - pos1), axis=1, keepdims=True)
+    dis_neg = K.sum(K.square(ref1 - neg1), axis=1, keepdims=True)
+    dis_pos = K.sqrt(dis_pos)
+    dis_neg = K.sqrt(dis_neg)
+    a1 = 0.6
+    d1 = dis_pos + K.maximum(0.0, dis_pos - dis_neg + a1)
+    return K.mean(d1)
+
+```
+
+#### G(7) Freeze the bottom NB-IV3-LAYERS and retrain the remaining top layers(Only use for Inception V3 Model)
+
+NB-IV3-LAYERS Corresponds to the top 2 inception blocks in the inceptionv3 arch
+
+```python
+def setup_to_finetune(model):
+    for layer in model.layers[:NB_IV3_LAYERS_TO_FREEZE]:
+        layer.trainable = False
+    for layer in model.layers[NB_IV3_LAYERS_TO_FREEZE:]:
+        layer.trainable = True
+    model.compile(optimizer=SGD(lr=0.0001, momentum=0.9), loss='categorical_crossentropy', metrics=['accuracy'])
+
+```
+
+#### G(8) Set the transfer learning process
+
+Use transfer learning and fine-tuning to train a network on a new dataset.<br/>
+**In "set up model" part, choose the transfer learning model you need. Before use, please check attributes we entered before since different model have different requirements in some attributes such as the size of input pictures.**
+
+```python
+def train(args):
+    """Use transfer learning and fine-tuning to train a network on a new dataset"""
+    nb_train_samples = get_nb_files(args.train_dir)
+    nb_classes = len(glob(args.train_dir + "/*"))
+    nb_val_samples = get_nb_files(args.val_dir)
+    nb_epoch = int(args.nb_epoch)
+    batch_size = int(args.batch_size)
+
+    # data prep
+    train_datagen = ImageDataGenerator(
+        preprocessing_function=preprocess_input,
+        rotation_range=30,
+        width_shift_range=0.2,
+        height_shift_range=0.2,
+        shear_range=0.2,
+        zoom_range=0.2,
+        horizontal_flip=True
+    )
+    test_datagen = ImageDataGenerator(
+        preprocessing_function=preprocess_input,
+        rotation_range=30,
+        width_shift_range=0.2,
+        height_shift_range=0.2,
+        shear_range=0.2,
+        zoom_range=0.2,
+        horizontal_flip=True
+    )
+
+    train_generator = train_datagen.flow_from_directory(
+        args.train_dir,
+        target_size=(IM_WIDTH, IM_HEIGHT),
+        batch_size=batch_size
+    )
+    validation_generator = test_datagen.flow_from_directory(
+        args.val_dir,
+        target_size=(IM_WIDTH, IM_HEIGHT),
+        batch_size=batch_size
+    )
+
+    # setup model
+    # base_model using Inception V3
+    # base_model = InceptionV3(weights='imagenet', include_top=False)  # include_top=False excludes final FC layer
+
+    # base_model using ResNet50
+    # base_model = ResNet50(weights='imagenet', include_top=False, input_tensor=Input(shape=(224, 224, 3)))
+
+    # base_model using VGG19
+    base_model = VGG19(include_top=False, weights='imagenet',input_tensor=None, input_shape=None,pooling=None)
+
+    model = add_new_last_layer(base_model, nb_classes)
+
+    # transfer learning
+    setup_to_transfer_learn(model, base_model)
+    
+    
+	#fit the model and return the result of the training process
+    history_tl = model.fit_generator(
+        train_generator,
+        steps_per_epoch=train_generator.n / train_generator.batch_size,
+        epochs=nb_epoch,
+        validation_data=validation_generator,
+        validation_steps=validation_generator.n / validation_generator.batch_size,
+        class_weight='balanced',
+        verbose=1,
+        callbacks=[TensorBoard(log_dir='.\\keras\\tmp\\log\\', write_graph=True)])
+
+    # fine-tuning
+    setup_to_finetune(model)
+
+    history_ft = model.fit_generator(
+        train_generator,
+        steps_per_epoch=train_generator.n / train_generator.batch_size,
+        epochs=nb_epoch,
+        validation_data=validation_generator,
+        validation_steps=validation_generator.n / validation_generator.batch_size,
+        class_weight='balanced',
+        verbose=1,
+        callbacks=[TensorBoard(log_dir='.\\keras\\tmp\\log\\', write_graph=True)])
+    
+    
+	 #save the well-trained model
+    model.save(args.output_model_file) 
+
+    if args.plot:
+        plot_training(history_ft)
+```
+
+#### G(9) plot the result in Tensorboard
+```python
+def plot_training(history):
+    acc = history.history['acc']
+    val_acc = history.history['val_acc']
+    loss = history.history['loss']
+    val_loss = history.history['val_loss']
+    epochs = range(len(acc))
+
+    plt.plot(epochs, acc, 'r.')
+    plt.plot(epochs, val_acc, 'r')
+    plt.title('Training and validation accuracy')
+
+    plt.figure()
+    plt.plot(epochs, loss, 'r.')
+    plt.plot(epochs, val_loss, 'r-')
+    plt.title('Training and validation loss')
+    plt.show()
+```
+
+#### G(10) Initialize the model
+
+All set, let's start training!
+
+```python
+if __name__ == "__main__":
+    a = argparse.ArgumentParser()
+    a.add_argument("--train_dir", default=".\\keras\\train\\")
+    a.add_argument("--val_dir", default=".\\keras\\test\\")
+    a.add_argument("--nb_epoch", default=NB_EPOCHS)
+    a.add_argument("--batch_size", default=BAT_SIZE)
+    a.add_argument("--output_model_file", default="vgg16-transfer-ver1.model")
+    a.add_argument("--plot", action="store_true")
+
+    args = a.parse_args()
+    if args.train_dir is None or args.val_dir is None:
+        a.print_help()
+        sys.exit(1)
+
+    if (not os.path.exists(args.train_dir)) or (not os.path.exists(args.val_dir)):
+        print("directories do not exist")
+        sys.exit(1)
+
+    train(args)
+```
+
+### H. Project Process Description -- Return the results
+```python
+train_images = glob(".\\input\\train\\*jpg")
+test_images = glob(".\\input\\test\\*jpg")
+df = pd.read_csv(".\\input\\train.csv")
+
+df["Image"] = df["Image"].map(lambda x: ".\\input\\train\\" + x)
+ImageToLabelDict = dict(zip(df["Image"], df["Id"]))
+SIZE = 224
+
+
+def ImportImage(filename):
+    img = Image.open(filename).convert("LA").resize((SIZE, SIZE))
+    return np.array(img)[:, :, 0]
+
+
+class LabelOneHotEncoder():
+    def __init__(self):
+        self.ohe = OneHotEncoder()
+        self.le = LabelEncoder()
+
+    def fit_transform(self, x):
+        features = self.le.fit_transform(x)
+        return self.ohe.fit_transform(features.reshape(-1, 1))
+
+    def transform(self, x):
+        return self.ohe.transform(self.la.transform(x.reshape(-1, 1)))
+
+    def inverse_tranform(self, x):
+        return self.le.inverse_transform(self.ohe.inverse_tranform(x))
+
+    def inverse_labels(self, x):
+        return self.le.inverse_transform(x)
+
+
+y = list(map(ImageToLabelDict.get, train_images))
+lohe = LabelOneHotEncoder()
+y_cat = lohe.fit_transform(y)
+
+image_gen = ImageDataGenerator(
+    # featurewise_center=True,
+    # featurewise_std_normalization=True,
+    rescale=1. / 255,
+    rotation_range=15,
+    width_shift_range=.15,
+    height_shift_range=.15,
+    horizontal_flip=True)
+
+model = load_model(".\\vgg16-transfer-ver1.model")
+model.load_weights(".\\vgg16-transfer-ver1.model")
+target_size = (224, 224)
+
+def predict(model, img, target_size):
+    """Run model prediction on image
+    Args:
+      model: keras model
+      img: PIL format image
+      target_size: (w,h) tuple
+    Returns:
+      list of predicted labels and their probabilities
+    """
+    if img.size != target_size:
+        img = img.resize(target_size)
+
+    x = image.img_to_array(img)
+    x = np.expand_dims(x, axis=0)
+    x = preprocess_input(x)
+    preds = model.predict(x)
+    return preds
+
+with open("sample_submission.csv", "w") as f:
+    with warnings.catch_warnings():
+        f.write("Image,Id\n")
+        warnings.filterwarnings("ignore", category=DeprecationWarning)
+        for images in test_images:
+            img = Image.open(images)
+            img = img.convert("L")
+            img = img.convert("RGB")
+            y = predict(model, img, target_size)
+            predicted_args = np.argsort(y)[0][::-1][:5]
+            predicted_tags = lohe.inverse_labels(predicted_args)
+            images = split(images)[-1]
+            predicted_tags = " ".join(predicted_tags)
+            # if the model is trained without the new_whale class
+            # predicted_tags = "new_whale " + predicted_tags
+            f.write("%s,%s\n" % (images, predicted_tags))
+```
+
+
+### I. Results
 
 | Method        | Accuracy in test set                         | Epochs                         | Average time (s/per epoch)    |
 | ------------- | ---------------------------- | ----                  |------------------------------------------------ |
@@ -207,14 +530,14 @@ Since the category "New_Whale" is an ambiguous category, contain a lot of photos
 
 
 
-### I. References
-1. https://www.coursera.org/learn/neural-networks-deep-learning
-2. https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf
-3. https://arxiv.org/abs/1512.03385
-4. https://en.wikipedia.org/wiki/Humpback_whale
-5. https://cs231n.github.io<br />
+### J. References
+1. https://www.coursera.org/learn/neural-networks-deep-learning<br/>
+2. https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf<br/>
+3. https://arxiv.org/abs/1512.03385<br/>
+4. https://en.wikipedia.org/wiki/Humpback_whale<br/>
+5. https://cs231n.github.io<br/>
 
-### J.License (MIT)
+### K.License (MIT)
 These tutorials and source-code are published under the [MIT License](https://github.com/ZiyaoQiao/INFO7390_FinalProject/blob/master/LICENSE) which allows very broad use for both academic and commercial purposes.<br />
 
 A few of the images used for demonstration purposes may be under copyright. These images are included under the "fair usage" laws.<br />
