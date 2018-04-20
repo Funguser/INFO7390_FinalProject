@@ -25,6 +25,8 @@ from glob import glob
 import os
 from shutil import copyfile,rmtree
 
+# please set the path before use
+
 train_images = glob("Datas/train/*jpg")
 test_images = glob("Datas/test/*jpg")
 df = pd.read_csv("Datas/train.csv")

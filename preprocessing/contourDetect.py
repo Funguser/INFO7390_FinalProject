@@ -24,9 +24,9 @@ import cv2
 import os
 from matplotlib import pyplot as plt
 
-originPath = '/Users/royn/INFO 7390/INFO-7390-Assignment/HW4/Datas/train'
+originPath = '/Users/royn/INFO 7390/INFO7390_FinalProject/Datas/train/'
 
-targetPath = '/Users/royn/INFO 7390/INFO-7390-Assignment/HW4/Datas/contourDetected/'
+targetPath = '/Users/royn/INFO 7390/INFO7390_FinalProject/Datas/contourDetected_train/'
 
 g = os.walk(originPath)
 for path,d,filelist in g:

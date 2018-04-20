@@ -17,11 +17,13 @@ The success of the model will be evaluated based on the accuracy of the model co
 
 ### E. Main model of the project
 1. [traditional CNN model with relative few layers](https://github.com/ZiyaoQiao/INFO7390_FinalProject/tree/master/Basic%20Model)<br />
-2. [pretrained model(including InceptionV3, Resnet50, VGG16)](https://github.com/ZiyaoQiao/INFO7390_FinalProject/blob/master/Pretrained%20Model/InceptionV3.py)<br />
+2. [pretrained model(including InceptionV3, Resnet50, VGG16)](https://github.com/ZiyaoQiao/INFO7390_FinalProject/blob/master/Pretrained%20Model/TransferLearning.py)<br />
 <br />
 
 ### F. Project Process Description -- Basic CNN Model
 #### *Before use, please make sure you download the Dataset, edit the input path in the code correctly and install all necessary packages.*
+
+*Main python package we need for this project: os, sys, argparse, seaborn, math, glob, matplotlib, PIL, sklearn, keras with Tensorflow backend, pandas, shutil, cv2*
 
 #### F(1) Detect the contour of the tail
 We also write a function which could figure out apparent contour in one photo, which could highlighted the shape of the tail in some cases. We would generate a brand new dataset based on this algotithm and use models to learn this dataset.
@@ -30,12 +32,16 @@ We also write a function which could figure out apparent contour in one photo, w
 # for individual picture
 # originpath: Absolute path of the Data file
 
-g = os.walk(originPath)
+originPath = '/Users/royn/INFO 7390/INFO7390_FinalProject/Datas/train/'
+
+targetPath = '/Users/royn/INFO 7390/INFO7390_FinalProject/Datas/contourDetected_train/'
+
+g = os.walk("Datas/train/")
 for path,d,filelist in g:
 for filename in filelist:
 if filename.endswith('jpg'):
 
-img = cv2.imread(originPath+filename)
+img = cv2.imread("Datas/train/"+filename)
 
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
@@ -74,6 +80,7 @@ train_img = np.array([ImportImage(img) for img in train_images])
 ```
 
 #### F(3) Data preprocessing and augmentation
+We have limited data in the dataset, and many classes have only one or two photos, so it is unwise to split part of data in the dataset as the internal test set. 
 
 ```python
 #use of an image generator for preprocessing and data augmentation
@@ -462,7 +469,7 @@ class LabelOneHotEncoder():
     def inverse_labels(self, x):
         return self.le.inverse_transform(x)
 
-
+#preprocess photos just as what we had done in training process, ensure the testing quality
 y = list(map(ImageToLabelDict.get, train_images))
 lohe = LabelOneHotEncoder()
 y_cat = lohe.fit_transform(y)
@@ -497,7 +504,7 @@ def predict(model, img, target_size):
     x = preprocess_input(x)
     preds = model.predict(x)
     return preds
-
+    
 with open("sample_submission.csv", "w") as f:
     with warnings.catch_warnings():
         f.write("Image,Id\n")
@@ -521,23 +528,24 @@ with open("sample_submission.csv", "w") as f:
 
 | Method        | Accuracy in test set                         | Epochs                         | Average time (s/per epoch)    |
 | ------------- | ---------------------------- | ----                  |------------------------------------------------ |
-| ResNet50 without 'NewWhale'            | 32.482%                  | 60                 | 12478s|
-| ResNet50 with 'NewWhale'            | 32.631%                  | 60                   | 12600s|
-| VGG19 with 'NewWhale'            | 32.999%                  | 60                   | 2270s|
-| inceptionV3 without 'NewWhale'            | 32.481%                  | 60                   | 4703s|
-| CNN Model with contour detected            | 32.763%                  | 70                   | 55s|
-| CNN Model without contour detected            | 32.875%                  | 70                   | 54s|
+| ResNet50 without 'NewWhale'            | 32.482%                  | 10                 | 12478s|
+| ResNet50 with 'NewWhale'            | 32.631%                  | 10                   | 12600s|
+| VGG19 with 'NewWhale'            | 32.999%                  | 30                   | 2270s|
+| inceptionV3 without 'NewWhale'            | 32.481%                  | 20                   | 4703s|
+| CNN Model with contour detected            | 32.763%                  | 100                   | 55s|
+| CNN Model without contour detected            | 32.875%                  | 100                   | 54s|
+
+### J. Conclusion
 
 
-
-### J. References
+### K. References
 1. https://www.coursera.org/learn/neural-networks-deep-learning<br/>
 2. https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf<br/>
 3. https://arxiv.org/abs/1512.03385<br/>
 4. https://en.wikipedia.org/wiki/Humpback_whale<br/>
 5. https://cs231n.github.io<br/>
 
-### K.License (MIT)
+### L.License (MIT)
 These tutorials and source-code are published under the [MIT License](https://github.com/ZiyaoQiao/INFO7390_FinalProject/blob/master/LICENSE) which allows very broad use for both academic and commercial purposes.<br />
 
 A few of the images used for demonstration purposes may be under copyright. These images are included under the "fair usage" laws.<br />
