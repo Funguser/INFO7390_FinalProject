@@ -430,9 +430,11 @@ def plot_training(history):
 
 #### G(10) Initialize the model
 
-All set, let's start training!
+All set, let's start training! Please set your model output path and save your trained model after training.
 
 ```python
+#Set your path in "a.add_argument("--output_model_file", ...)" as what we had done.<br/>
+
 if __name__ == "__main__":
     a = argparse.ArgumentParser()
     a.add_argument("--train_dir", default=".\\keras\\train\\")
@@ -454,7 +456,10 @@ if __name__ == "__main__":
     train(args)
 ```
 
-### H. Project Process Description -- Return the results
+### H. Project Process Description -- Return the results of pretrained model
+
+Use your output model in the G part and 
+
 ```python
 train_images = glob(".\\input\\train\\*jpg")
 test_images = glob(".\\input\\test\\*jpg")
@@ -550,7 +555,7 @@ with open("sample_submission.csv", "w") as f:
 | ResNet50 without 'NewWhale'            | 32.482%                  | 10                 | 12478s|
 | ResNet50 with 'NewWhale'            | 32.631%                  | 10                   | 12600s|
 | VGG19 with 'NewWhale'            | 32.999%                  | 30                   | 2270s|
-| inceptionV3 without 'NewWhale'            | 32.481%                  | 20                   | 4703s|
+| InceptionV3 without 'NewWhale'            | 32.481%                  | 20                   | 4703s|
 | CNN Model with contour detected            | 32.763%                  | 100                   | 215s|
 | CNN Model without contour detected            | 32.875%                  | 100                   | 214s|
 
