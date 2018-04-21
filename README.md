@@ -566,7 +566,14 @@ with open("sample_submission.csv", "w") as f:
 4. https://en.wikipedia.org/wiki/Humpback_whale<br/>
 5. https://cs231n.github.io<br/>
 
-### L.License (MIT)
+### L. Source of Code
+1. https://medium.com/@14prakash/transfer-learning-using-keras-d804b2e04ef8<br/>
+2. https://www.learnopencv.com/keras-tutorial-transfer-learning-using-pre-trained-models/<br/>
+3. https://www.tensorflow.org/tutorials/image_retraining<br/>
+4. https://github.com/spejss/Keras-Transfer-Learning-Tutorial<br/>
+5. https://www.kaggle.com/gimunu/data-augmentation-with-keras-into-cnn<br/>
+
+### M.License (MIT)
 These tutorials and source-code are published under the [MIT License](https://github.com/ZiyaoQiao/INFO7390_FinalProject/blob/master/LICENSE) which allows very broad use for both academic and commercial purposes.<br />
 
 A few of the images used for demonstration purposes may be under copyright. These images are included under the "fair usage" laws.<br />
