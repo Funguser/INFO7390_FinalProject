@@ -7,6 +7,7 @@ Nowadays, whale is really rare and protecting whale is necessary. Different spec
 
 ### B. Data sources
 Most of datas comes from [Happy Whale](https://happywhale.com) and sorted by [Kaggle](https://www.kaggle.com), a platform which already use image process algorithms to category photos collected from public and various survey.<br />
+[**Dataset of this project.**](https://www.kaggle.com/c/whale-categorization-playground/data)
 
 ### C. Algorithms are being used and best of public kernals
 Since the competition has no award and participants have no responsibility to pubilc their code, limited kernels are available. For most of public kernels, they just try to input data, resize photos and make color channels identical — even it means it may lose some information of colored photos.<br />
@@ -15,6 +16,7 @@ Some kernels made further research. For instance, some would use constructed [CN
 ### D. Evaluating the success of the model
 The success of the model will be evaluated based on the accuracy of the model could achieve. The host of the competition will provide one or more test set for participants to evaluate and improve the model. What we need to do is to construct, test and improve the model based on the result we get.<br />
 
+
 ### E. Main model of the project
 1. [traditional CNN model with relative few layers](https://github.com/ZiyaoQiao/INFO7390_FinalProject/tree/master/Basic%20Model)<br />
 2. [pretrained model(including InceptionV3, Resnet50, VGG16)](https://github.com/ZiyaoQiao/INFO7390_FinalProject/blob/master/Pretrained%20Model/TransferLearning.py)<br />
@@ -22,52 +24,61 @@ The success of the model will be evaluated based on the accuracy of the model co
 
 ### F. Project Process Description -- Basic CNN Model
 #### *Before use, please make sure you download the Dataset, edit the input path in the code correctly and install all necessary packages.*
+[**Dataset of this project.**](https://www.kaggle.com/c/whale-categorization-playground/data)
 
-*Main python package we need for this project: os, sys, argparse, seaborn, math, glob, matplotlib, PIL, sklearn, keras with Tensorflow backend, pandas, shutil, cv2*
+*Main python packages we need for this project: os, sys, argparse, seaborn, math, glob, matplotlib, PIL, sklearn, keras with Tensorflow backend, pandas, shutil, cv2*
 
 #### F(1) Detect the contour of the tail
 We also write a function which could figure out apparent contour in one photo, which could highlighted the shape of the tail in some cases. We would generate a brand new dataset based on this algotithm and use models to learn this dataset.
 
 ```python
 # for individual picture
-# originpath: Absolute path of the Data file
+# originpath: Absolute path or relative path of the Data file, based on the position of your program
+# please take care of the indent because it represent the logic of a "if" or "for" iteration in Python
 
-originPath = '/Users/royn/INFO 7390/INFO7390_FinalProject/Datas/train/'
+originPath = 'Datas/train/'  #Relative path
 
-targetPath = '/Users/royn/INFO 7390/INFO7390_FinalProject/Datas/contourDetected_train/'
+targetPath = '/Users/royn/INFO 7390/INFO7390_FinalProject/Datas/contourDetected_train/'   #Absolute path
 
-g = os.walk("Datas/train/")
+g = os.walk(originPath)
 for path,d,filelist in g:
-for filename in filelist:
-if filename.endswith('jpg'):
+    for filename in filelist:
+        if filename.endswith('jpg'):
 
-img = cv2.imread("Datas/train/"+filename)
+            img = cv2.imread(originPath+filename)
 
-gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-gradX = cv2.Sobel(gray, ddepth=cv2.CV_32F, dx=1, dy=0, ksize=3)
-gradY = cv2.Sobel(gray, ddepth=cv2.CV_32F, dx=0, dy=1, ksize=3)
+            gradX = cv2.Sobel(gray, ddepth=cv2.CV_32F, dx=1, dy=0, ksize=3)
+            gradY = cv2.Sobel(gray, ddepth=cv2.CV_32F, dx=0, dy=1, ksize=3)
 
-# subtract the y-gradient from the x-gradient
-gradient = cv2.subtract(gradX, gradY)
-gradient = cv2.convertScaleAbs(gradient)
-(_, thresh) = cv2.threshold(gradient, 100, 255, cv2.THRESH_BINARY)
+            # subtract the y-gradient from the x-gradient
+            gradient = cv2.subtract(gradX, gradY)
+            gradient = cv2.convertScaleAbs(gradient)
+            (_, thresh) = cv2.threshold(gradient, 100, 255, cv2.THRESH_BINARY)
 
-thresh = cv2.dilate(thresh, None, iterations=1)
-thresh = cv2.dilate(thresh, None, iterations=1)
-thresh = cv2.erode(thresh, None, iterations=1)
-thresh = cv2.erode(thresh, None, iterations=1)
+            thresh = cv2.dilate(thresh, None, iterations=1)
+            thresh = cv2.dilate(thresh, None, iterations=1)
+            thresh = cv2.erode(thresh, None, iterations=1)
+            thresh = cv2.erode(thresh, None, iterations=1)
 
-# use cv2.RETR_TREE to locate and lock the tail
-image, contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE,
-cv2.CHAIN_APPROX_SIMPLE)
-img = cv2.drawContours(img, contours, -1, (0, 255, 0), 5)
+            image, contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE,
+                                                          cv2.CHAIN_APPROX_SIMPLE)  # use cv2.RETR_TREE to locate and lock the tail
+            img = cv2.drawContours(img, contours, -1, (0, 255, 0), 5)
 
-# return photo with highlighted edges
-canny_edges = cv2.Canny(img, 300, 300)
-plt.imshow(canny_edges)
-cv2.imwrite(targetPath + filename, img, [int(cv2.IMWRITE_JPEG_QUALITY), 95])
+            canny_edges = cv2.Canny(img, 300, 300)
+            plt.imshow(canny_edges)
+
+            cv2.imwrite(targetPath + filename, img, [int(cv2.IMWRITE_JPEG_QUALITY), 95])
+
+            # return photo with highlighted edges
+            canny_edges = cv2.Canny(img, 300, 300)
+            plt.imshow(canny_edges)
+            cv2.imwrite(targetPath + filename, img, [int(cv2.IMWRITE_JPEG_QUALITY), 95])
 ```
+
+![](./Assets/1.png) 
+**Sample of results.**
 
 #### F(2) Make photos Black and White, resize the photo
 Since some of photos in the datast is gray and White as well as others are colored, in the basic CNN model, we use an existing function and make all the photos in the dataset Black-and-White, try to decrease the noises generated by colors, even it also indicates we will lose some useful information in some cases.
@@ -155,12 +166,13 @@ augmented_images, _ = next( image_gen.flow( x_train, y_train.toarray(), batch_si
 ```
 
 #### F(7) Convolution Nerual Network Model
-After many different try, we finally worked out a CNN model with highest cost-interest ratio. This model have 2 convolutional layer after 1 input layer, with several dropout layer, flatten layer and dense layer to reshape the data and catch features. We set batchsize as 128 and step value is total number of the training set devided by batchsize, in this way we could make sure every photo in the dataset could be iterated once in a single epoch. Initially, the model run in 9 epochs to run in relative low costs. However, more epochs could be added if someone have better machine.
+After many different try, we finally worked out a CNN model with highest cost-interest ratio. This model have 3 convolutional layers, with several dropout layers, flatten layers and dense layers to reshape the data and catch features. We set batchsize as 128 and step value is total number of the training set devided by batchsize, in this way we could make sure every photo in the dataset could be iterated once in a single epoch. Initially, we set the model run in small epochs like 10 to run in relative low costs. However, more epochs could be added if someone have better machine. In the end, we increase the epochs up to 100.<br/>
+Besides, we added callback function in the model, you could set up the functions and check results by using Tensorboard.
 
 ```python
 batch_size = 128
 num_classes = len(y_cat.toarray()[0])
-epochs = 70
+epochs = 100
 
 model = Sequential()
 model.add(Conv2D(48, kernel_size=(3, 3),
@@ -194,6 +206,8 @@ model.fit_generator(image_gen.flow(x_train, y_train.toarray(), batch_size=batch_
 
 #### *Please setup a Machine with advanced GPU to used those pretrained models, if you run those model without such a machine, it would take a really long time to run, be interrupted easily and damage the machine seriously.*
 
+#### *Why we suggest not to use Jupyter Notebook to run this project?<br/> Jupyter Notebook will not release GPU-Memory after computation unless you kill whole kernel, which is fatal for the speed of computing in our project. [Refer to similar problems.](https://discuss.pytorch.org/t/memory-is-not-released-in-jupyter-after-keyboardinterrupt/6757)*
+
 #### G(1) Split photo with different ID to different files
 ``` python
 import pandas as pd
@@ -224,10 +238,13 @@ def save_images(df,ImageToLabelDict):
 save_images(df, ImageToLabelDict)
 ```
 
+
 #### G(2) Train without "New_whale" class
 Since the category "New_Whale" is an ambiguous category, contain a lot of photos(more than 800) with various features, which would lead a large amount of noise, so in some of our model, we train the model without this category. All we need to do is just findout the output filepath in the last part and delete the "new-whale" folder.
 
 #### G(3) Set up attributes
+**Different model have different size requirement, for InceptionV3 is 224x224, for ResNet50 we keep the same, but for VGG19 we change it to 299x299.**
+
 ```python
 IM_WIDTH, IM_HEIGHT = 224, 224  # fixed size for InceptionV3
 NB_EPOCHS = 60
@@ -284,7 +301,7 @@ def triplet_loss(y_true, y_pred):
 
 #### G(7) Freeze the bottom NB-IV3-LAYERS and retrain the remaining top layers(Only use for Inception V3 Model)
 
-NB-IV3-LAYERS Corresponds to the top 2 inception blocks in the inceptionv3 arch
+NB-IV3-LAYERS Corresponds to the top 2 inception blocks in the inceptionv3 architecture, hides some layer and leave others train, to figure out features more clearly.
 
 ```python
 def setup_to_finetune(model):
@@ -532,10 +549,12 @@ with open("sample_submission.csv", "w") as f:
 | ResNet50 with 'NewWhale'            | 32.631%                  | 10                   | 12600s|
 | VGG19 with 'NewWhale'            | 32.999%                  | 30                   | 2270s|
 | inceptionV3 without 'NewWhale'            | 32.481%                  | 20                   | 4703s|
-| CNN Model with contour detected            | 32.763%                  | 100                   | 55s|
-| CNN Model without contour detected            | 32.875%                  | 100                   | 54s|
+| CNN Model with contour detected            | 32.763%                  | 100                   | 215s|
+| CNN Model without contour detected            | 32.875%                  | 100                   | 214s|
 
 ### J. Conclusion
+1. In conclusion, the basic CNN model seems too easy for the dataset and it could not figure out too many features from the training set. Besides, since many class in the dataset have only one or two picture, so the weight of features from single photo could be really large and have negative influence to the result.<br/>
+2. However, even different models we implemented have tiny difference, totally they performed similar for this dataset and the score in the test set not have large difference. As we summarized, that’s mainly because of the low quality of the dataset: nearly every pictures have different size, some photos is colorful but others not, and the photos obtained from different direction, different distance and environment, which is also consider and captured as a part of features by the models.
 
 
 ### K. References
