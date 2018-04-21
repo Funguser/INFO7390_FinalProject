@@ -208,6 +208,8 @@ model.fit_generator(image_gen.flow(x_train, y_train.toarray(), batch_size=batch_
 
 #### *Why we suggest not to use Jupyter Notebook to run this project?<br/> Jupyter Notebook will not release GPU-Memory after computation unless you kill whole kernel, which is fatal for the speed of computing in our project. [Refer to similar problems.](https://discuss.pytorch.org/t/memory-is-not-released-in-jupyter-after-keyboardinterrupt/6757)*
 
+#### *We strongly suggest readers to run pretrained models in terminal, and set file directory before running so that the CPU and GPU could concentrate most of resources in the calcultating process.*
+
 #### G(1) Split photo with different ID to different files
 ``` python
 import pandas as pd
