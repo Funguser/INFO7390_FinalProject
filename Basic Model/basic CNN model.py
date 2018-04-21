@@ -51,12 +51,12 @@ from PIL import Image
 
 import numpy as np
 
-train_df = pd.read_csv('Datas/train.csv')
+train_df = pd.read_csv('/Users/royn/INFO 7390/INFO7390_FinalProject/Datas/train.csv')
 train_df.head()
-train_images = glob("Datas/train/*jpg")
-test_images = glob("../input/test/*jpg")
+train_images = glob("/Users/royn/INFO 7390/INFO7390_FinalProject/Datas/train/*jpg")
+test_images = glob("/Users/royn/INFO 7390/INFO7390_FinalProject/Datas/test/*jpg")
 
-train_df["Image"] = train_df["Image"].map( lambda x : "Datas/train/"+x)
+train_df["Image"] = train_df["Image"].map( lambda x : "/Users/royn/INFO 7390/INFO7390_FinalProject/Datas/train/"+x)
 ImageToLabelDict = dict(zip(train_df["Image"], train_df["Id"]))
 
 SIZE = 64
