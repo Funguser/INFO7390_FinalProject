@@ -6,7 +6,7 @@
 Nowadays, whale is really rare and protecting whale is necessary. Different species of whales have different features in their shape of tails and special markings. Thus, in many cases, scientists monitor whales’ activities by using photos of their tails. To help scientists confirm the species of different whales in huge number of photos and save their time, we aim to build a new machine learning model to do this instead of persons.<br />
 
 ### B. Data sources
-Most of datas comes from [Happy Whale](https://happywhale.com) and sorted by [Kaggle](https://www.kaggle.com), a platform which already use image process algorithms to category photos collected from public and various survey.<br />
+Most of data comes from [Happy Whale](https://happywhale.com) and sorted by [Kaggle](https://www.kaggle.com), a platform which already use image process algorithms to category photos collected from public and various survey.<br />
 [**Dataset of this project.**](https://www.kaggle.com/c/whale-categorization-playground/data)
 
 ### C. Algorithms are being used and best of public kernals
@@ -200,7 +200,7 @@ model.fit_generator(image_gen.flow(x_train, y_train.toarray(), batch_size=batch_
           class_weight=class_weight_dic)
 ```
 
-### G. Project Process Description -- Pretrained Model
+### G. Project Process Description -- Transfer Learning
 
 #### *Before use, please make sure you download the Dataset, edit the input path in the code correctly and install all necessary packages.*
 
@@ -385,7 +385,7 @@ def train(args):
         validation_steps=validation_generator.n / validation_generator.batch_size,
         class_weight='balanced',
         verbose=1,
-        callbacks=[TensorBoard(log_dir='.\\keras\\tmp\\log\\', write_graph=True)])
+        callbacks=[TensorBoard(log_dir='./keras/tmp/log/', write_graph=True)])
 
     # fine-tuning
     setup_to_finetune(model)
@@ -398,7 +398,7 @@ def train(args):
         validation_steps=validation_generator.n / validation_generator.batch_size,
         class_weight='balanced',
         verbose=1,
-        callbacks=[TensorBoard(log_dir='.\\keras\\tmp\\log\\', write_graph=True)])
+        callbacks=[TensorBoard(log_dir='./keras/tmp/log/', write_graph=True)])
     
     
 	 #save the well-trained model
@@ -437,8 +437,8 @@ All set, let's start training! Please set your model output path and save your t
 
 if __name__ == "__main__":
     a = argparse.ArgumentParser()
-    a.add_argument("--train_dir", default=".\\keras\\train\\")
-    a.add_argument("--val_dir", default=".\\keras\\test\\")
+    a.add_argument("--train_dir", default="./keras/train/")
+    a.add_argument("--val_dir", default="./keras/test/")
     a.add_argument("--nb_epoch", default=NB_EPOCHS)
     a.add_argument("--batch_size", default=BAT_SIZE)
     a.add_argument("--output_model_file", default="vgg16-transfer-ver1.model")
@@ -461,11 +461,11 @@ if __name__ == "__main__":
 Use your output model in the G part and 
 
 ```python
-train_images = glob(".\\input\\train\\*jpg")
-test_images = glob(".\\input\\test\\*jpg")
-df = pd.read_csv(".\\input\\train.csv")
+train_images = glob("./input/train/*jpg")
+test_images = glob("./input/test/*jpg")
+df = pd.read_csv("./input/train.csv")
 
-df["Image"] = df["Image"].map(lambda x: ".\\input\\train\\" + x)
+df["Image"] = df["Image"].map(lambda x: "./input/train/" + x)
 ImageToLabelDict = dict(zip(df["Image"], df["Id"]))
 SIZE = 224
 
