@@ -3,7 +3,7 @@
 ## Repository Description
 
 ### Ω. Some issues concerning Technical Notebook
-We will not use jupyter noterbook for our technical portfolio and will not upload datas to the repository. We had communicated with Professor Brown and obtained aggrement from him.
+We will not use jupyter noterbook for our technical portfolio and will not upload datas to the repository. We had communicated with Professor Brown and obtained agreement from him.
 ![](./Assets/2.png) 
 
 ### A. Topic description
