@@ -6,6 +6,9 @@
 We will not use jupyter noterbook for our technical portfolio and will not upload datas to the repository. We had communicated with Professor Brown and obtained agreement from him.
 ![](./Assets/2.png) 
 
+Link to project repository: https://github.com/ZiyaoQiao/INFO7390_FinalProject<br/>
+
+
 ### A. Topic description
 Nowadays, whale is really rare and protecting whale is necessary. Different species of whales have different features in their shape of tails and special markings. Thus, in many cases, scientists monitor whales’ activities by using photos of their tails. To help scientists confirm the species of different whales in huge number of photos and save their time, we aim to build a new machine learning model to do this instead of persons.<br />
 
