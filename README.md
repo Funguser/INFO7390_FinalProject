@@ -462,7 +462,7 @@ if __name__ == "__main__":
 
 ### H. Project Process Description -- Return the results of pretrained model
 
-Use your output model in the G part and 
+Use your output model in the G part, implement it in the test set from Kaggle and return the result.
 
 ```python
 train_images = glob("./input/train/*jpg")
