@@ -2,6 +2,10 @@
 
 ## Repository Description
 
+### Ω. Some issues concerning Technical Notebook
+We will not use jupyter noterbook for our technical portfolio and will not upload datas to the repository. We had communicated with Professor Brown and obtained aggrement from him.
+![](./Assets/2.png) 
+
 ### A. Topic description
 Nowadays, whale is really rare and protecting whale is necessary. Different species of whales have different features in their shape of tails and special markings. Thus, in many cases, scientists monitor whales’ activities by using photos of their tails. To help scientists confirm the species of different whales in huge number of photos and save their time, we aim to build a new machine learning model to do this instead of persons.<br />
 
