@@ -8,6 +8,12 @@ We will not use jupyter noterbook for our technical portfolio and will not uploa
 
 Link to project repository: https://github.com/ZiyaoQiao/INFO7390_FinalProject<br/>
 
+These tutorials and source-code are published under the [MIT License](https://github.com/ZiyaoQiao/INFO7390_FinalProject/blob/master/LICENSE) which allows very broad use for both academic and commercial purposes.<br />
+
+A few of the images used for demonstration purposes may be under copyright. These images are included under the "fair usage" laws.<br />
+
+You are very welcome to modify these tutorials and use them in your own projects, but please keep a link to the [original repository](https://github.com/ZiyaoQiao/INFO7390_FinalProject).<br />
+
 
 ### A. Topic description
 Nowadays, whale is really rare and protecting whale is necessary. Different species of whales have different features in their shape of tails and special markings. Thus, in many cases, scientists monitor whales’ activities by using photos of their tails. To help scientists confirm the species of different whales in huge number of photos and save their time, we aim to build a new machine learning model to do this instead of persons.<br />
